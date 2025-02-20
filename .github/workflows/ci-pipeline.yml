@@ -21,10 +21,10 @@ jobs:
         run: npm install -g newman
 
       - name: Run calc service tests
-        run: newman run tests/calc.postman_collection.json
+        run: newman run tests/calc_ut.postman_collection.json
 
       - name: Run string service tests
-        run: newman run tests/string.postman_collection.json
+        run: newman run tests/string_ut.postman_collection.json
 
   integration-tests:
     runs-on: ubuntu-latest
