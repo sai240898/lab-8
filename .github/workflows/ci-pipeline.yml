@@ -1,0 +1,57 @@
+name: Microservices CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '14'
+
+      - name: Install Newman (Postman CLI)
+        run: npm install -g newman
+
+      - name: Run calc service tests
+        run: newman run tests/calc.postman_collection.json
+
+      - name: Run string service tests
+        run: newman run tests/string.postman_collection.json
+
+  integration-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker images
+        run: docker-compose build
+
+      - name: Run Docker containers
+        run: docker-compose up -d
+
+      - name: Run integration tests
+        run: newman run tests/integration.postman_collection.json
+
+  performance-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Locust
+        run: pip install locust
+
+      - name: Run performance tests
+        run: locust -f tests/locustfile.py --headless -u 100 -r 10 --run-time 1m --host=http://localhost:8080
