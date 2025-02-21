@@ -70,7 +70,7 @@ jobs:
           chmod +x /usr/local/bin/docker-compose
 
       - name: Build the Entire Architecture
-        run: docker-compose build  # Step 5: Build the architecture using docker-compose
+        run: docker-compose -f src/docker-compose.yml build  # Step 5: Build the architecture using docker-compose
 
       - name: Start All Services
         run: docker-compose up -d  # Step 6: Start services in detached mode
